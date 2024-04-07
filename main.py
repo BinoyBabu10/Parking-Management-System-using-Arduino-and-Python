@@ -8,8 +8,6 @@ slot_status = [0, 0, 0]  # Assuming all slots are initially available
 slot_start_time = [None, None, None]  # Keep track of start time for each slot
 parking_rate_per_hour = 5  # Adjust the rate as needed
 
-
-# Function to update parking slot status based on Arduino data
 # Function to update parking slot status based on Arduino data
 def update_status():
     global slot_status
@@ -30,8 +28,6 @@ def update_status():
 
     root.after(1000, update_status)
 
-
-
 # Function to update GUI labels based on parking slot status
 def update_labels():
     for i in range(len(slot_labels)):
@@ -42,10 +38,9 @@ def update_labels():
             minutes = (duration % 3600) // 60
             seconds = duration % 60
             duration_str = "{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds)
-            slot_labels[i].config(text="Slot {}: {}, Duration: {}".format(i + 1, status, duration_str))
+            slot_labels[i].config(text="Slot {}: {}, Duration: {}".format(i + 1, status, duration_str), bg="orange")
         else:
-            slot_labels[i].config(text="Slot {}: {}".format(i + 1, status))
-
+            slot_labels[i].config(text="Slot {}: {}".format(i + 1, status), bg="green")
 
 # Function to handle payment received for a parking slot
 def pay(slot):
@@ -61,25 +56,32 @@ def pay(slot):
     else:
         print("Slot {} is not occupied or already paid for.".format(slot))
 
-
 # Arduino Serial Communication
 ser = serial.Serial('COM7', 9600)  # Change COM3 to your Arduino's port
 
 # GUI Setup
 root = Tk()
+root.config(bg="black", padx=20, pady=20)
 root.title("Parking Management System")
-root.geometry("400x300")  # Fixed width and height
+root.geometry("500x300")  # Adjusted width and height
+
+# Title Label
+title_label = Label(root, text="Parking Management System", font=("Arial", 16, "bold"), bg="black", fg="white")
+title_label.pack(pady=(0, 10))
 
 slot_labels = []
 payment_buttons = []
 
 for i in range(3):
-    label = Label(root, text="Slot {}: Available".format(i + 1), width=30)
-    label.pack()
+    frame = Frame(root, bg="black")
+    frame.pack(pady=5)
+
+    label = Label(frame, text="Slot {}: Available".format(i + 1), width=25, font=("Arial", 12), bg="green", fg="white")
+    label.pack(side=LEFT, padx=10)
     slot_labels.append(label)
 
-    button = Button(root, text="Pay for Slot {}".format(i + 1), width=20, command=lambda i=i: pay(i + 1))
-    button.pack()
+    button = Button(frame, text="Pay for Slot {}".format(i + 1), width=15, font=("Arial", 10), command=lambda i=i: pay(i + 1))
+    button.pack(side=LEFT, padx=10)
     payment_buttons.append(button)
 
 update_status()  # Start updating status from Arduino

@@ -38,7 +38,7 @@ def update_labels():
             minutes = (duration % 3600) // 60
             seconds = duration % 60
             duration_str = "{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds)
-            slot_labels[i].config(text="Slot {}: {}, Duration: {}".format(i + 1, status, duration_str), bg="orange")
+            slot_labels[i].config(text="Slot {}: {}, Duration: {}".format(i + 1, status, duration_str), bg="red")
         else:
             slot_labels[i].config(text="Slot {}: {}".format(i + 1, status), bg="green")
 

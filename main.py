@@ -10,6 +10,7 @@ parking_rate_per_hour = 5  # Adjust the rate as needed
 
 
 # Function to update parking slot status based on Arduino data
+# Function to update parking slot status based on Arduino data
 def update_status():
     global slot_status
     data = ser.readline().decode('ascii').strip()
@@ -20,12 +21,15 @@ def update_status():
                     slot_start_time[i] = time.time()  # Record start time when slot becomes occupied
                 else:
                     slot_start_time[i] = None  # Reset start time when slot becomes available
-            slot_status[i] = int(data[i])
-        update_labels()
+                slot_status[i] = int(data[i])
+                update_labels()
+                if int(data[i]) == 1:  # Check if the slot becomes available
+                    messagebox.showinfo("Slot Empty", "Slot {} is now empty.".format(i+1))
     else:
         print("Received data length does not match expected length.")
 
     root.after(1000, update_status)
+
 
 
 # Function to update GUI labels based on parking slot status
@@ -59,7 +63,7 @@ def pay(slot):
 
 
 # Arduino Serial Communication
-ser = serial.Serial('COM3', 9600)  # Change COM3 to your Arduino's port
+ser = serial.Serial('COM7', 9600)  # Change COM3 to your Arduino's port
 
 # GUI Setup
 root = Tk()
